@@ -27,6 +27,18 @@ app.get('/users', (req, res) => {
     });
 });
 
+// Route to get all users with their posts
+app.get('/usersWithPosts', (req, res) => {
+    db.all(`SELECT * FROM User_Posts`, [], (err, rows) => {
+        if (err) {
+            res.status(500).send(err.message);
+            return;
+        }
+        res.json(rows);
+    });
+});
+
+// Route to get all posts
 app.get('/posts', (req, res) => {
     db.all(`SELECT * FROM Posts`, [], (err, rows) => {
         if (err) {
@@ -36,8 +48,50 @@ app.get('/posts', (req, res) => {
         res.json(rows);
     });
 });
-// TODO get user and posts by id 
 
+// TODO get post by id
+app.get('/posts/:id', (req, res) => {
+    const id = req.params.id;
+    db.get(`SELECT * FROM Posts WHERE id = ?`, [id], (err, rows) => {
+        if (err) {
+            res.status(500).send(err.message);
+            return;
+        }
+        res.json(rows);
+    });
+});
+
+// TODO get user by id
+app.get('/users/:id', (req, res) => {
+    const id = req.params.id;
+    db.get(`SELECT * FROM Users WHERE id = ?`, [id], (err, rows) => {
+        if (err) {
+            res.status(500).send(err.message);
+            return;
+        }
+        res.json(rows);
+    });
+});
+
+// Registering User
+app.post('/register', (req, res) => {
+	const { username, password } = req.body;
+	db.run("INSERT INTO Users (username, password) VALUES (?, ?)", [username, password], (err) => {
+		if (err) {return res.status(400).send("Username already exists")}
+		res.status(200).send("User Registered");
+	})
+})
+
+// Logging User
+app.post("/login", (req, res) => {
+	const { username, password } = req.body;
+	db.get("SELECT * FROM Users WHERE username = ? AND password = ?", [username, password], (err, rows) => {
+		if (err || !rows) {
+			return res.status(400).send("Invalid!");
+		}
+		res.status(200).send("Login Successful!")
+	})
+})
 
 app.get('/', (req, res) => {
     res.send('Hello World');
