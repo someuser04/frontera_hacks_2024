@@ -9,78 +9,97 @@ const port = 3000;
 
 // Set up SQLite database connection
 const db = new sqlite3.Database('./info.db', (err) => {
-    if (err) {
-        console.error('Database connection error:', err.message);
-        return;
-    }
-    console.log('Connected to the SQLite database.');
+  if (err) {
+    console.error('Database connection error:', err.message);
+    return;
+  }
+  console.log('Connected to the SQLite database.');
 });
 
 // Route to get all users
 app.get('/users', (req, res) => {
-    db.all(`SELECT * FROM Users`, [], (err, rows) => {
-        if (err) {
-            res.status(500).send(err.message);
-            return;
-        }
-        res.json(rows);
-    });
+  db.all(`SELECT * FROM Users`, [], (err, rows) => {
+    if (err) {
+      res.status(500).send(err.message);
+      return;
+    }
+    res.json(rows);
+  });
 });
 
 // Route to get all users with their posts
 app.get('/usersWithPosts', (req, res) => {
-    db.all(`SELECT * FROM User_Posts`, [], (err, rows) => {
-        if (err) {
-            res.status(500).send(err.message);
-            return;
-        }
-        res.json(rows);
-    });
+  db.all(`SELECT * FROM User_Posts`, [], (err, rows) => {
+    if (err) {
+      res.status(500).send(err.message);
+      return;
+    }
+    res.json(rows);
+  });
 });
 
 // Route to get all posts
 app.get('/posts', (req, res) => {
-    db.all(`SELECT * FROM Posts`, [], (err, rows) => {
-        if (err) {
-            res.status(500).send(err.message);
-            return;
-        }
-        res.json(rows);
-    });
+  db.all(`SELECT * FROM Posts`, [], (err, rows) => {
+    if (err) {
+      res.status(500).send(err.message);
+      return;
+    }
+    res.json(rows);
+  });
 });
 
 // TODO get post by id
 app.get('/posts/:id', (req, res) => {
-    const id = req.params.id;
-    db.get(`SELECT * FROM Posts WHERE id = ?`, [id], (err, rows) => {
-        if (err) {
-            res.status(500).send(err.message);
-            return;
-        }
-        res.json(rows);
-    });
+  const id = req.params.id;
+  db.get(`SELECT * FROM Posts WHERE id = ?`, [id], (err, rows) => {
+    if (err) {
+      res.status(500).send(err.message);
+      return;
+    }
+    res.json(rows);
+  });
 });
 
 // TODO get user by id
 app.get('/users/:id', (req, res) => {
-    const id = req.params.id;
-    db.get(`SELECT * FROM Users WHERE id = ?`, [id], (err, rows) => {
-        if (err) {
-            res.status(500).send(err.message);
-            return;
-        }
-        res.json(rows);
-    });
+  const id = req.params.id;
+  db.get(`SELECT * FROM Users WHERE id = ?`, [id], (err, rows) => {
+    if (err) {
+      res.status(500).send(err.message);
+      return;
+    }
+    res.json(rows);
+  });
 });
 
 // Registering User
 app.post('/register', (req, res) => {
-	const { username, password } = req.body;
-	db.run("INSERT INTO Users (username, password) VALUES (?, ?)", [username, password], (err) => {
-		if (err) {return res.status(400).send("Username already exists")}
-		res.status(200).send("User Registered");
-	})
-})
+  const { username, password, email, location, picture } = req.body;
+
+    // Check if username already exists
+  db.get("SELECT * FROM Users WHERE username = ?", [username], (err, row) => {
+    if (err) {
+      return res.status(500).send("Database error");
+    }
+    if (row) {
+      return res.status(400).send("Username already exists");
+    }
+
+      // Insert the new user
+    db.run(
+      "INSERT INTO Users (username, password, email, location, pfp) VALUES (?, ?, ?, ?, ?)",
+      [username, password, email, location, picture],
+      function (err) {
+        if (err) {
+          return res.status(500).send("Database error: " + err.message);
+        }
+        res.status(200).send("User Registered");
+      }
+    );
+  });
+});
+
 
 // Logging User
 app.post("/login", (req, res) => {
@@ -89,14 +108,14 @@ app.post("/login", (req, res) => {
 		if (err || !rows) {
 			return res.status(400).send("Invalid!");
 		}
-		res.status(200).send("Login Successful!")
+		res.status(200).send(rows)
 	})
 })
 
 app.get('/', (req, res) => {
-    res.send('Hello World');
+  res.send('Hello World');
 });
 
 app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+  console.log(`Server is running on port ${port}`);
 });
