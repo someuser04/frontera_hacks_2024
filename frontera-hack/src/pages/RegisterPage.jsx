@@ -12,7 +12,7 @@ const RegisterPage = () => {
   const [error, setError] = useState(false);
 
   const handleRegister = async () => {
-    const response = await fetch("http://localhost:3000/register", {
+    const response = await fetch("https://frontera-hacks-2024-backend.onrender.com/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password, email, location, picture }),

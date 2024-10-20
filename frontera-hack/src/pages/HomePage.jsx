@@ -39,7 +39,7 @@ const HomePage = () => {
     // fetching all posts kinda obvious but still
     const fetchPosts = async () => {
       try {
-        const response = await fetch("http://localhost:3000/posts");
+        const response = await fetch("https://frontera-hacks-2024-backend.onrender.com/posts");
         const data = await response.json();
         setPosts(data);
       } catch (error) {
@@ -51,7 +51,7 @@ const HomePage = () => {
     const fetchProfile = async (userId) => {
       if (!userId) return;
       try {
-        const response = await fetch(`http://localhost:3000/users/${userId}`);
+        const response = await fetch(`https://frontera-hacks-2024-backend.onrender.com/users/${userId}`);
         const data = await response.json();
         setUser(data);
       } catch (error) {
@@ -87,14 +87,14 @@ const HomePage = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:3000/createPost", {
+      const response = await fetch("https://frontera-hacks-2024-backend.onrender.com/createPost", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(newPost),
       });
-      const updatedPostsResponse = await fetch("http://localhost:3000/posts");
+      const updatedPostsResponse = await fetch("https://frontera-hacks-2024-backend.onrender.com/posts");
       const updatedPosts = await updatedPostsResponse.json();
       setPosts(updatedPosts);
     } catch (error) {
@@ -105,7 +105,7 @@ const HomePage = () => {
   const handleSearch = async () => {
     if (!search) return;
     try {
-      const response = await fetch(`http://localhost:3000/postSearch/${search}`);
+      const response = await fetch(`https://frontera-hacks-2024-backend.onrender.com/postSearch/${search}`);
       const temp = await response.json();
       setSearchedPosts(temp);
     } catch (e) {

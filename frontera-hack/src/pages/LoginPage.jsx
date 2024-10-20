@@ -10,7 +10,7 @@ const LoginPage = () => {
 
   // Handle registration
   const handleRegister = async () => {
-    const response = await fetch("http://localhost:3000/register", {
+    const response = await fetch("https://frontera-hacks-2024-backend.onrender.com/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -29,7 +29,7 @@ const LoginPage = () => {
 
   // Handle login
   const handleLogin = async () => {
-    const response = await fetch("http://localhost:3000/login", {
+    const response = await fetch("https://frontera-hacks-2024-backend.onrender.com/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
