@@ -15,8 +15,11 @@ const LandingPage = () => {
         }}
       />
       <div className="bg-white p-8 rounded-lg shadow-md z-10 w-full max-w-lg text-center">
-        <h1 className="text-4xl font-bold mb-6 text-gray-800">Welcome to the Middle Page™</h1>
-        <p className="mb-8 text-gray-600">Your journey starts here. Please register or login to continue.</p>
+        <h1 className="text-4xl font-bold mb-6 text-gray-800 ">We Are The Middle Man™</h1>
+        <p className="text-gray-600">Are you looking to promote your <span className="text-red-500 font-bold">local</span> business?</p>
+        <p className="mb-4 text-gray-600">
+          Look no further! Promote it here where users are specifically looking receive and <span className="text-red-500 font-bold"> support local business!</span>
+        </p>
         <div className="flex justify-center gap-4">
           <button
             onClick={() => navigate("/register")}

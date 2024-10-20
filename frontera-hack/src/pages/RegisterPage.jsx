@@ -12,6 +12,11 @@ const RegisterPage = () => {
   const [error, setError] = useState(false);
 
   const handleRegister = async () => {
+    if (!username || !password || !email || !location || !picture) {
+      setMessage("Fill out all input fields!");
+      setError(true);
+      return;
+    }
     const response = await fetch("https://frontera-hacks-2024-backend.onrender.com/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -30,7 +35,9 @@ const RegisterPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-bold mb-6 text-center">Register Page</h1>
+        <h1 className="text-2xl font-bold text-center">Register Page</h1>
+        <p className="pt-4 text-center">Provide image URL's for your profile picture!</p>
+        <p className="text-center pb-4">(image address when you right-click an image!)</p>
         <div className="flex flex-col gap-4">
           <input
             type="text"

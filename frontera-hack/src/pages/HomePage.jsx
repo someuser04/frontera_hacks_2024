@@ -97,6 +97,8 @@ const HomePage = () => {
       const updatedPostsResponse = await fetch("https://frontera-hacks-2024-backend.onrender.com/posts");
       const updatedPosts = await updatedPostsResponse.json();
       setPosts(updatedPosts);
+      setImage("");
+      setDescription("");
     } catch (error) {
       console.log("Error creating post:", error);
     }
@@ -117,14 +119,15 @@ const HomePage = () => {
     <div className="flex">
 
       {/* Sidebar */}
-      <div className="bg-yellow-500 w-1/4 h-screen flex flex-col items-center justify-center p-4">
+      <div className="bg-white w-1/4 h-screen flex flex-col items-center justify-center p-4 space-y-2">
+        <p className="text-sm text-gray-500 py-2 text-center">Input an image address for your business image!</p>
         {/* Image Input */}
         <input
           type="url"
           placeholder="Image"
           value={image}
           onChange={(e) => setImage(e.target.value)}
-          className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="p-2 border bg-[#EBEBEB] border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 lg:w-56 sm:w-28"
         />
         {/* Description Input */}
         <input
@@ -132,16 +135,16 @@ const HomePage = () => {
           placeholder="Description"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="p-2 border bg-[#EBEBEB] border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 lg:w-56 sm:w-28"
         />
         {/* Post Button */}
         <button onClick={handlePost} className="bg-blue-500 w-24 h-10 rounded-full text-white">
-          Post
+          Post!
         </button>
       </div>
 
       {/* Main Content */}
-      <div className="bg-white w-2/4 h-screen flex flex-col items-center p-4">
+      <div className="bg-white w-2/3 h-screen flex flex-col items-center p-4">
         <div className="flex items-center justify-center pb-4">
           {/* Username */}
           <h1 className="text-2xl font-bold">Welcome, {user ? user.USERNAME : "Guest"}</h1>
@@ -160,15 +163,15 @@ const HomePage = () => {
       </div>
 
       {/* Search Section */}
-      <div className="bg-orange-500 w-1/4 h-screen flex flex-col items-center justify-center">
-        <div className="p-4">
+      <div className="bg-white w-1/4 h-screen flex flex-col">
+        <div className="p-4 flex items-center justify-center">
           {/* Search Bar */}
           <input
             type="text"
             placeholder="Search"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="p-2 ml-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 lg:w-56 sm:w-12"
           />
           {/* Search Button */}
           <button
