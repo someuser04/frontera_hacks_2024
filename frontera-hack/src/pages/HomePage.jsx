@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Post from "../components/post";
 import Cookies from "js-cookie";
+import SearchPost from "../components/searchPosts";
 
 const HomePage = () => {
 
@@ -11,6 +12,8 @@ const HomePage = () => {
   const [user, setUser] = useState();
   const [image, setImage] = useState("");
   const [description, setDescription] = useState("");
+  const [search, setSearch] = useState("");
+  const [searchedPosts, setSearchedPosts] = useState([]);
 
   useEffect(() => {
     const getCookie = () => {
@@ -86,16 +89,25 @@ const HomePage = () => {
     }
   }
 
+  const handleSearch = async () => {
+    if (!search) {
+      return;
+    }
+    try {
+      setSearchedPosts([]);
+      const response = await fetch (`http://localhost:3000/postSearch/${search}`);
+      const temp = await response.json();
+      setSearchedPosts(temp);
+      console.log(searchedPosts);
+    } catch (e) {
+      console.log("Error Fetching Searched Posts!: ", e);
+    }
+  }
+
   return (
     <div className="flex">
       {/* Sidebar */}
-      <div className="bg-yellow-500 w-1/4 h-screen flex flex-col items-center p-4">
-        <button
-          onClick={handleLogout}
-          className="mt-4 py-2 px-4 bg-red-500 text-white rounded-full hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 transition duration-300"
-        >
-          Logout
-        </button>
+      <div className="bg-yellow-500 w-1/4 h-screen flex flex-col items-center justify-center p-4">
         <input
             type="url"
             placeholder="Image"
@@ -115,7 +127,15 @@ const HomePage = () => {
       
       {/* Main Content */}
       <div className="bg-white w-2/4 h-screen flex flex-col items-center p-4">
-        <h1 className="text-2xl font-bold mb-4">Welcome, {user ? user.USERNAME : 'Guest'}</h1>
+        <div className="flex items-center justify-center pb-4">
+          <h1 className="text-2xl font-bold">Welcome, {user ? user.USERNAME : 'Guest'}</h1>
+          <button
+            onClick={handleLogout}
+            className="py-2 px-4 mx-4 bg-red-500 text-white rounded-full hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 transition duration-300"
+          >
+            Logout
+          </button>
+        </div>
         <div className="h-full overflow-y-auto overflow-x-hidden scrollbar-hidden w-full flex flex-col items-center">
           {posts.length > 0 ? (
             posts.map((post, i) => <Post post={post} key={i} />)
@@ -126,7 +146,27 @@ const HomePage = () => {
       </div>
       
       {/* Trending Section */}
-      <div className="bg-orange-500 w-1/4 h-screen"></div>
+      <div className="bg-orange-500 w-1/4 h-screen flex flex-col items-center justify-center">
+        <div className="p-4">
+          <input
+            type="text"
+            placeholder="Search"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button onClick={handleSearch} className="py-2 px-4 mx-4 bg-red-500 text-white rounded-full hover:bg-red-600 transition duration-300" >
+            Search
+          </button>
+        </div>
+        <div className="h-full overflow-y-auto overflow-x-hidden scrollbar-hidden w-full flex flex-col items-center">
+          {searchedPosts.length > 0 ? (
+            searchedPosts.map((post, i) => <SearchPost post={post} key={i} />)
+          ) : (
+            <p>Search for posts!</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

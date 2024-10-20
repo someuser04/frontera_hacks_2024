@@ -102,13 +102,6 @@ app.post('/register', (req, res) => {
 
 app.post("/createPost", (req, res) => {
   const { author, location, description, image, email, pfp } = req.body;
-  console.log("Author: ", author);
-  console.log("Location: ", location);
-  console.log("Description: ", description);
-  console.log("Image: ", image);
-  console.log("Email: ", email);
-  console.log("Pfp: ", pfp);
-  console.log("=============================");
   if (!author || !description) {
     return res.status(400).send("Author and Description Are Required!");
   }
@@ -135,6 +128,20 @@ app.post("/login", (req, res) => {
 		res.status(200).send(rows);
 	})
 })
+
+// Finding posts based on query
+app.get("/postSearch/:query", (req, res) => {
+  const { query } = req.params;
+  db.all("SELECT * FROM Posts WHERE description LIKE ?", [`%${query}%`], (err, rows) => {
+    if (err) {
+      return res.status(400).send("Error Fetching Posts!");
+    } else if (!rows) {
+      return res.status(200).send("No Posts!");
+    } else {
+      res.status(200).send(rows);
+    }
+  });
+});
 
 app.get('/', (req, res) => {
   res.send('Hello World');
