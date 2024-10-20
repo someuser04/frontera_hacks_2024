@@ -3,6 +3,7 @@ import Post from "../components/post";
 import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import SearchPost from "../components/searchPosts"; 
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const HomePage = () => {
 
@@ -14,6 +15,21 @@ const HomePage = () => {
   const [description, setDescription] = useState("");
   const [search, setSearch] = useState("");
   const [searchedPosts, setSearchedPosts] = useState([]);
+  const apiKey = import.meta.env.VITE_API_KEY;
+
+  const checkPost = async (description) => {
+
+    try {
+      const genAI = new GoogleGenerativeAI(apiKey);
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const prompt = `Given this description: ${description}, determine if it is inappropiate, if so return just the pharse true, otherwise false. Do not capitalize the words true or false.`;
+      const result = await model.generateContent(prompt);
+      const isInappropiate = result.response.text().trim().toLowerCase() === "true";
+      return isInappropiate;
+    } catch (error) {
+      console.error("Error with Generative AI:", error);
+    }
+  };
 
   useEffect(() => {
     
@@ -56,6 +72,11 @@ const HomePage = () => {
 
   const handlePost = async () => {
     if (!image || !description) return;
+    const flag = await checkPost(description);
+    if (flag) {
+      console.log("Bad Post!");
+      return;
+    }
     const newPost = {
       author: user.USERNAME,
       location: user.LOCATION,
