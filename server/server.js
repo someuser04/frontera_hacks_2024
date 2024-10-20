@@ -104,11 +104,11 @@ app.post('/register', (req, res) => {
 // Logging User
 app.post("/login", (req, res) => {
 	const { username, password } = req.body;
-	db.get("SELECT * FROM Users WHERE username = ? AND password = ?", [username, password], (err, rows) => {
+	db.get("SELECT id FROM Users WHERE username = ? AND password = ?", [username, password], (err, rows) => {
 		if (err || !rows) {
 			return res.status(400).send("Invalid!");
 		}
-		res.status(200).send(rows)
+		res.status(200).send(rows);
 	})
 })
 

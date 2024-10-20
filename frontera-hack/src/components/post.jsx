@@ -5,7 +5,7 @@ const Post = ({ post }) => {
     <>
       <div className="h-[550px] w-[800px] bg-[#EBEBEB] my-6 p-2 flex flex-col justify-between rounded-3xl">
         <div className="flex">
-          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPaVCOvLe_WzdWTmekiVBJ-1obJ009XmKzsw&s" className="w-24 h-24 rounded-full p-2" />
+          <img src={post.Pfp} className="w-24 h-24 rounded-full p-2 object-fit" />
           <div className="flex flex-col justify-center">
             <div>{post.Author}</div>
             <div>{post.Location}</div>

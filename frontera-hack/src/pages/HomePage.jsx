@@ -7,12 +7,12 @@ const HomePage = () => {
   const navigate = useNavigate();
   const [id, setId] = useState();
   const [posts, setPosts] = useState([]);
+  const [user, setUser] = useState();
 
   useEffect(() => {
     const getCookie = () => {
       return Cookies.get("id");
     };
-    setId(getCookie());
 
     const fetchPosts = async () => {
       try {
@@ -24,12 +24,30 @@ const HomePage = () => {
       }
     };
 
-    fetchPosts();
-  }, []);
+    const fetchProfile = async (userId) => {
+      if (!userId) return; // Don't fetch profile if userId is not available
+      try {
+        const response = await fetch(`http://localhost:3000/users/${userId}`);
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        setUser(data);
+      } catch (error) {
+        console.error("Error Fetching Users: ", error);
+      }
+    };
+
+    const userId = getCookie();
+    setId(userId); // Set the user ID
+    fetchPosts(); // Fetch posts
+    fetchProfile(userId); // Fetch profile after userId is set
+
+  }, []); // No dependencies means this runs once when the component mounts
 
   const handleLogout = () => {
     Cookies.remove("id");
-    navigate("/");
+    navigate("/"); // Redirect to login or landing page
   };
 
   return (
@@ -46,8 +64,8 @@ const HomePage = () => {
       
       {/* Main Content */}
       <div className="bg-white w-2/4 h-screen flex flex-col items-center p-4">
-        <h1 className="text-2xl font-bold mb-4">Welcome, {id}</h1>
-        <div className="h-full overflow-y-auto overflow-x-hidden scrollbar-hidden w-full">
+        <h1 className="text-2xl font-bold mb-4">Welcome, {user ? user.USERNAME : 'Guest'}</h1>
+        <div className="h-full overflow-y-auto overflow-x-hidden scrollbar-hidden w-full flex flex-col items-center">
           {posts.length > 0 ? (
             posts.map((post, i) => <Post post={post} key={i} />)
           ) : (
