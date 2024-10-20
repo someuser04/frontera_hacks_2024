@@ -1,6 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Cookies from 'js-cookie';
 
 const LoginPage = () => {
+
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -29,9 +33,24 @@ const LoginPage = () => {
       body: JSON.stringify({ username, password }),
     });
 
-    const data = await response.text();
-    setMessage(data);
+    const data = await response.json();
+    setMessage(data.Id);
   };
+
+  useEffect(() => {
+    const checkLogin = () => {
+      if (message) {
+        setCookie(message);
+        console.log(message);
+        navigate("/home");
+      }
+    }
+    checkLogin();
+  }, [message])
+
+  const setCookie = (id) => {
+    Cookies.set("id", id);
+  }
 
   return (
     <div>
