@@ -100,6 +100,30 @@ app.post('/register', (req, res) => {
   });
 });
 
+app.post("/createPost", (req, res) => {
+  const { author, location, description, image, email, pfp } = req.body;
+  console.log("Author: ", author);
+  console.log("Location: ", location);
+  console.log("Description: ", description);
+  console.log("Image: ", image);
+  console.log("Email: ", email);
+  console.log("Pfp: ", pfp);
+  console.log("=============================");
+  if (!author || !description) {
+    return res.status(400).send("Author and Description Are Required!");
+  }
+  db.run(
+    "INSERT INTO Posts (author, location, description, image, email, pfp) VALUES (?, ?, ?, ?, ?, ?)",
+    [author, location, description, image, email, pfp],
+    function (err) {
+      if (err) {
+        return res.status(500).send("Database error: " + err.message);
+      }
+      res.status(200).send("Post Created!");
+    }
+  )
+})
+
 
 // Logging User
 app.post("/login", (req, res) => {

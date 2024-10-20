@@ -4,10 +4,13 @@ import Post from "../components/post";
 import Cookies from "js-cookie";
 
 const HomePage = () => {
+
   const navigate = useNavigate();
   const [id, setId] = useState();
   const [posts, setPosts] = useState([]);
   const [user, setUser] = useState();
+  const [image, setImage] = useState("");
+  const [description, setDescription] = useState("");
 
   useEffect(() => {
     const getCookie = () => {
@@ -50,6 +53,39 @@ const HomePage = () => {
     navigate("/"); // Redirect to login or landing page
   };
 
+  const handlePost = async () => {
+    if (!image || !description) {
+      return;
+    }
+    const newPost = {
+      author: user.USERNAME, 
+      location: user.LOCATION, 
+      description, 
+      image,
+      email: user.EMAIL, 
+      pfp: user.PFP
+    }
+    try {
+      const response = await fetch("http://localhost:3000/createPost", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newPost)
+      });
+      if (!response.ok) {
+        console.log("Error creating post!")
+      }
+      setImage("");
+      setDescription("");
+      const updatedPostsResponse = await fetch("http://localhost:3000/posts");
+      const updatedPosts = await updatedPostsResponse.json();
+      setPosts(updatedPosts);
+    } catch (error) {
+      console.log("Error creating post: ", error);
+    }
+  }
+
   return (
     <div className="flex">
       {/* Sidebar */}
@@ -60,6 +96,21 @@ const HomePage = () => {
         >
           Logout
         </button>
+        <input
+            type="url"
+            placeholder="Image"
+            value={image}
+            onChange={(e) => setImage(e.target.value)}
+            className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <input
+            type="text"
+            placeholder="Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button onClick={handlePost} className="bg-blue-500 w-24 h-10 rounded-full text-white" >Post</button>
       </div>
       
       {/* Main Content */}
